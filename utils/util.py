@@ -15,9 +15,7 @@ def seq2onehot(seq):
 
     embed_x = [vocab_embed[v] for v in seq]
     seq_x = np.array([vocab_one_hot[j, :] for j in embed_x], dtype=float)
-    seq_x = torch.from_numpy(seq_x)
-
-
+    seq_x = torch.tensor(seq_x)
     return seq_x
 
 def coords_to_adjmat(coords, threshold=10.0):
@@ -27,7 +25,7 @@ def coords_to_adjmat(coords, threshold=10.0):
 
 def pdb2cmap(pdb_fname, threshold=10.0):
      # load coords from a pdb file
-     coords = torch.from_numpy(load_pdb(pdb_fname)['coords'])
+     coords = torch.tensor(load_pdb(pdb_fname)['coords'])
 
      # compute contact map
      A = coords_to_adjmat(coords, threshold=threshold)

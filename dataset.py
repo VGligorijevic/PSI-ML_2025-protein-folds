@@ -56,8 +56,8 @@ class PaddCollator(object):
         if len(batch[0]) != 3:
             lens = [h.size(0) for (h, _)  in batch]
             max_len = max(lens)
-            H_batch = torch.zeros((len(batch), max_len, self.vocab_size), dtype=float)
-            Y_batch = torch.zeros(len(batch), dtype=int)
+            H_batch = torch.zeros((len(batch), max_len, self.vocab_size), dtype=torch.float32)
+            Y_batch = torch.zeros(len(batch), dtype=torch.long)
             for i, (l, x) in enumerate(zip(lens, batch)):
                 H_batch[i, :l] = x[0]
                 Y_batch[i] = x[1]
@@ -65,11 +65,11 @@ class PaddCollator(object):
         else:
             lens = [a.size(0) for (a, _, _)  in batch]
             max_len = max(lens)
-            H_batch = torch.zeros((len(batch), max_len, self.vocab_size), dtype=float)
-            A_batch = torch.zeros((len(batch), max_len, max_len), dtype=float)
-            Y_batch = torch.zeros(len(batch), dtype=int)
+            H_batch = torch.zeros((len(batch), max_len, self.vocab_size), dtype=torch.float32)
+            A_batch = torch.zeros((len(batch), max_len, max_len), dtype=torch.float32)
+            Y_batch = torch.zeros(len(batch), dtype=torch.long)
             for i, (l, x) in enumerate(zip(lens, batch)):
                 A_batch[i, :l, :l] = x[0]
                 H_batch[i, :l] = x[1]
                 Y_batch[i] = x[2]
-            return A_batch, H_batch, Y_batch
+            return (A_batch, H_batch), Y_batch
