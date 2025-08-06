@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 
 import pytorch_lightning as pl
-from torchmetrics.classification import BinaryAccuracy
+from torcheval.metrics.functional import multiclass_accuracy
 
 class GraphNN(nn.Module):
     def __init__(self, in_features=24, out_features=6, hidden_features=64):
@@ -81,12 +81,13 @@ class ProtFoldClassifier(pl.LightningModule):
         self.lr = lr
         self.weight_decay = weight_decay
         self.gnn = gnn
+        self.num_classes = num_classes
 
         if self.gnn:
             self.classifier = GraphNN(in_features=vocab_size, out_features=num_classes, hidden_features=hidden_dim)
         else:
             self.classifier = SeqCNN(in_features=vocab_size, out_features=num_classes, hidden_features=hidden_dim)
-        self.acc = BinaryAccuracy()
+        # self.acc = multiclass_accuracy(average="macro", num_classes=num_classes)
         self.loss = nn.CrossEntropyLoss()
 
     def forward(self, x):
@@ -97,18 +98,20 @@ class ProtFoldClassifier(pl.LightningModule):
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
-        # acc = self.acc(torch.argmax(y_hat, dim=-1), y)
+        # acc = self.acc(torch.argmax(y_hat, dim=-1).long(), y)
+        acc = multiclass_accuracy(torch.argmax(y_hat, dim=-1), y, average='macro', num_classes=self.num_classes)
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        # self.log('train_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
-        # acc = self.acc(torch.argmax(y_hat, dim=-1), y)
+        # acc = self.acc(torch.argmax(y_hat, dim=-1).long(), y)
+        acc = multiclass_accuracy(torch.argmax(y_hat, dim=-1), y, average='macro', num_classes=self.num_classes)
         self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        # self.log('val_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
     def configure_optimizers(self):

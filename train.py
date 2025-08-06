@@ -19,8 +19,8 @@ pdb_dir = "./dompdb/"
 # pdb_dir = None
 gnn = True
 
-# epochs 
-epochs=3
+# epochs
+epochs=20
 
 # Directory with model checkpoints
 checkpoint_path = os.path.join('./', 'checkpoints')
@@ -40,7 +40,7 @@ collate_padd = PaddCollator(vocab_size=vocab_size)
 
 train_loader = DataLoader(
     ProtFoldDataset(df_train, fold_ids=fold_ids, pdb_dir=pdb_dir),
-    batch_size=16,
+    batch_size=64,
     collate_fn=collate_padd,
     shuffle=True,
     drop_last=True
@@ -48,7 +48,7 @@ train_loader = DataLoader(
 
 valid_loader = DataLoader(
     ProtFoldDataset(df_valid, fold_ids=fold_ids, pdb_dir=pdb_dir),
-    batch_size=32,
+    batch_size=64,
     collate_fn=collate_padd,
     shuffle=True,
     drop_last=False
@@ -67,9 +67,10 @@ checkpoint = pl.callbacks.ModelCheckpoint(
     )
 # W&B logger
 # logger = pl.loggers.WandbLogger(project='ProtFold', save_dir=os.path.join('./'))
+logger = pl.loggers.TensorBoardLogger(os.path.join('./tensorboard'))
 trainer = pl.Trainer(
     accelerator="cpu",
-    # logger=logger,
+    logger=logger,
     max_epochs=epochs,
     callbacks=[checkpoint]
     )
