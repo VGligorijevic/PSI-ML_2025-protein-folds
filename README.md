@@ -23,7 +23,7 @@ $ tar -xvzf cath-dataset-nonredundant-S40.pdb.tgz
 
 ## Experiments
 - `./data/` contains a pre-processed `.csv` file with a non-redundant set (40% sequence identity) of protein domain IDs and CATH classes (see `./utils/preprocess.py` script)
-- `train.py` scripts contains the basic code for setting up a data loader and training a simple ConvNN (use `pdb_dir=None` option) or GraphNN model (use `gnn=True` option and set `pdb_dir=./dompdb/`) on top 6 most frequent folds in the dataset. 
+- `train.py` scripts contains the basic code for setting up a data loader and training a simple ConvNN (use `gnn=False` option and set `pdb_dir=None`) or GraphNN model (use `gnn=True` option and set `pdb_dir=./dompdb/`). The model is trained on top 6 most frequent folds in the dataset. 
 -  to viz the loss/accuracy curves and monitor the training of the models use tensorboard: `tensorboard --logdir=tensorboard` (open `http://localhost:6006/` in your browser)  
 
 ## Contact
