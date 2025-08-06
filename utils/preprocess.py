@@ -92,4 +92,4 @@ if __name__ == "__main__":
                             }
                         ])
         df = pd.concat([df, df_row])
-    df.to_csv('protein_fold_classification.csv', index=False)
+    df.to_csv('../data/protein_fold_classification.csv', index=False)

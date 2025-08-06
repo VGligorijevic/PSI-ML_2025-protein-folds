@@ -87,7 +87,6 @@ class ProtFoldClassifier(pl.LightningModule):
             self.classifier = GraphNN(in_features=vocab_size, out_features=num_classes, hidden_features=hidden_dim)
         else:
             self.classifier = SeqCNN(in_features=vocab_size, out_features=num_classes, hidden_features=hidden_dim)
-        # self.acc = multiclass_accuracy(average="macro", num_classes=num_classes)
         self.loss = nn.CrossEntropyLoss()
 
     def forward(self, x):
@@ -98,7 +97,6 @@ class ProtFoldClassifier(pl.LightningModule):
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
-        # acc = self.acc(torch.argmax(y_hat, dim=-1).long(), y)
         acc = multiclass_accuracy(torch.argmax(y_hat, dim=-1), y, average='macro', num_classes=self.num_classes)
         self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         self.log('train_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)
@@ -108,7 +106,6 @@ class ProtFoldClassifier(pl.LightningModule):
         x, y = batch
         y_hat = self(x)
         loss = self.loss(y_hat, y)
-        # acc = self.acc(torch.argmax(y_hat, dim=-1).long(), y)
         acc = multiclass_accuracy(torch.argmax(y_hat, dim=-1), y, average='macro', num_classes=self.num_classes)
         self.log('val_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
         self.log('val_acc', acc, on_step=True, on_epoch=True, prog_bar=True, logger=True)

@@ -67,6 +67,8 @@ checkpoint = pl.callbacks.ModelCheckpoint(
     )
 # W&B logger
 # logger = pl.loggers.WandbLogger(project='ProtFold', save_dir=os.path.join('./'))
+
+# TensorBoard
 logger = pl.loggers.TensorBoardLogger(os.path.join('./tensorboard'))
 trainer = pl.Trainer(
     accelerator="cpu",

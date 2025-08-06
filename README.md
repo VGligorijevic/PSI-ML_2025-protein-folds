@@ -21,7 +21,11 @@ $ wget ftp://orengoftp.biochem.ucl.ac.uk/cath/releases/latest-release/non-redund
 $ tar -xvzf cath-dataset-nonredundant-S40.pdb.tgz 
 ```
 
-## Contact
+## Experiments
+- `./data/` contains a pre-processed `.csv` file with protein domains IDs and CATH classes (see `./utils/preprocess.py` script)
+- `train.py` scripts contains the basic code for setting up a data loader and training a simple ConvNN (use `pdb_dir=None` option) or GraphNN model (use `gnn=True` option and set `pdb_dir=./dompdb/`)
+-  to viz the loss/accuracy curves and monitor the training of the models use tensorboard: `tensorboard --logdir=tensorboard` (open `http://localhost:6006/` in your browser)  
 
-Authors: Vladimir Gligorijevic (vgligorijevic@gmail.com)
+## Contact
+Authors: Vladimir Gligorijevic (vgligorijevic@gmail.com).
 We welcome your questions and feedback via email or GitHub Issues.
